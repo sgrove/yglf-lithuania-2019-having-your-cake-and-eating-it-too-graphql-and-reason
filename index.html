@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title></title>
+<meta name="author" content="(Sean Grove)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/reveal.css"/>
+
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/theme/league.css" id="theme"/>
+
+<link rel="stylesheet" href="css/custom.css"/>
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/css/zenburn.css"/>
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'http://cdn.jsdelivr.net/reveal.js/3.0.0/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section>
+<section id="slide-orgbc19dd4">
+<h2 id="orgbc19dd4">YGLF Lithuania</h2>
+<p class="fragment appear">
+Having your cake and eating it too:
+</p>
+
+<p class="fragment appear">
+GraphQL and Reason
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org5c7d5f2">
+<h2 id="org5c7d5f2">Who am I?</h2>
+<ul>
+<li>Sean Grove (<a href="https://twitter.com/sgrove">@sgrove</a>), from SF</li>
+<li>Cofounder of (<a href="https://twitter.com/onegraphio">@OneGraphIO</a>)</li>
+<li>YC S11 / VP Eng / YC S18</li>
+<li>Background in Clojure(Script)/Reason/Rust</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org398c79a">
+<h2 id="org398c79a">REST is cool</h2>
+<ul>
+<li>Lots of industrial experience</li>
+<li>Frameworks galore!</li>
+<li>Infrastructure is robust</li>
+
+</ul>
+
+<p>
+Any similar but <span class="underline">new</span> tech has a lot of ground to cover if it's to catch up.
+</p>
+</section>
+<section id="slide-orgd7ee7bf">
+<h3 id="orgd7ee7bf">Example: Spotify REST API</h3>
+<ul>
+<li>The <a href="https://developer.spotify.com/documentation/web-api/reference-beta/">API documentation</a> is great!</li>
+<li>&#x2026; but meant entirely for humans</li>
+<li>What if we wanted to ask questions about the content of the API?</li>
+
+</ul>
+
+<p>
+Imagine we're building a node client, and we want to know if we've covered <span class="underline">all</span> of the endpoints.
+</p>
+
+<p>
+How would we do that with Spotify's docs?
+</p>
+</section>
+<section id="slide-org12453dc">
+<h4 id="org12453dc">REST challenges</h4>
+<p>
+Computer assistance is one way only
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org6d2f865">
+<h2 id="org6d2f865">GraphQL &amp; Introspectability</h2>
+<ul>
+<li>Computer-based introspection is fundamental to GraphQL</li>
+
+</ul>
+</section>
+<section id="slide-org0ec7389">
+<h3 id="org0ec7389">Quick prelude: GraphQL basics</h3>
+<p>
+GraphQL has three top-level parts:
+</p>
+
+<ul>
+<li><code>query</code>: Top-level read-only data</li>
+
+<li><code>mutation</code>: "Write" or effectful operation that <span class="underline">returns</span> read-only data</li>
+
+<li><code>subscription</code>: Continuous read-only data</li>
+
+</ul>
+
+</section>
+<section id="slide-org325bcb1">
+<h4 id="org325bcb1">GraphQL Syntax</h4>
+<div class="org-src-container">
+
+<pre><code class="graphql" >query {
+  user {
+    # select these two fields from a User
+    id
+    email
+  }
+}
+
+mutation {
+  # The GraphQL server has defined a mutation called
+  # setEmail parameterized by a string argument
+  setEmail(newEmail: "sean@onegraph.com") {
+    # In this case, this operation returns a "User",
+    # same as query above
+    id
+    email
+    updatedAt
+  }
+}
+</code></pre>
+</div>
+</section>
+<section id="slide-org201bb5f">
+<h4 id="org201bb5f">Sending a GraphQL request</h4>
+<div class="org-src-container">
+
+<pre><code class="javascript" >{
+  "query": "query {\n  user {\n    # select these two fields from a User\n    id\n    email\n  }\n}",
+  "variables": null,
+  "operationName": null
+}
+</code></pre>
+</div>
+<p>
+Put the operations from before into a string, and put it in a JSON structure under the <code>"query"</code> key.
+</p>
+
+<p>
+Then add <code>"variables"</code> and <code>"operationName"</code> (both nullable) to form a full payload for a GraphQL request.
+</p>
+</section>
+<section id="slide-org4501f15">
+<h4 id="org4501f15">Let's send a request!</h4>
+<div class="org-src-container">
+
+<pre><code class="javascript" >query {
+  npm {
+    package(name: "express") {
+      name
+      downloads {
+        lastMonth {
+          count
+        }
+      }
+    }
+  }
+}
+</code></pre>
+</div>
+
+<div class="org-src-container">
+
+<pre><code class="bash" >curl 'https://serve.onegraph.com/dynamic?app_id=0b33e830-7cde-4b90-ad7e-2a39c57c0e11' \
+-H 'Content-Type: application/json' \
+-H 'show_beta_schema: true' \
+-d '{"query":"query { npm { package(name: \"express\") { name downloads { lastMonth { count } } } } }"}'
+</code></pre>
+</div>
+
+<p>
+Try copy/pasting the curl command, it should just work™!
+</p>
+
+</section>
+<section id="slide-org3f2275f">
+<h3 id="org3f2275f">GraphQL &amp; Introspectability</h3>
+<p>
+We can select more than data <span class="underline">from</span> the API&#x2026;
+</p>
+
+<p>
+We can select more than data <span class="underline">ABOUT</span> the API&#x2026;
+</p>
+
+<div class="org-src-container">
+
+<pre><code class="javascript" >query {
+  __schema {
+    types {
+      name
+    }
+  }
+}
+</code></pre>
+</div>
+
+<div class="org-src-container">
+
+<pre><code class="bash" >curl 'https://serve.onegraph.io/dynamic?app_id=0b33e830-7cde-4b90-ad7e-2a39c57c0e11' -k \
+-H 'Content-Type: application/json' \
+-H 'show_beta_schema: true' \
+-d '{"query":"query IntrospectionQuery { __schema { types { name } } }"}' | jq -C "." | head -n 150
+</code></pre>
+</div>
+<p>
+Try copy/pasting the curl command (with <code>jq</code> installed) to see the first 150 types defined by this GraphQL service!
+</p>
+
+</section>
+<section >
+<p>
+Let's find all the objects belonging to Spotify:
+</p>
+
+<div class="org-src-container">
+
+<pre><code class="javascript" >fetch(
+  'https://serve.onegraph.com/dynamic?app_id=0b33e830-7cde-4b90-ad7e-2a39c57c0e11',
+  {
+    Headers: {'Content-Type': 'application/json', show_beta_schema: true},
+    method: 'POST',
+    body:
+      '{"query":"query IntrospectionQuery { __schema { types { name } } }"}',
+  },
+).then(result => result.json()).then(result => window.spotifyTypes = result.data.__schema.types.filter(type => type.name.startsWith("Spotify")));
+</code></pre>
+</div>
+
+</section>
+<section id="slide-org51a842a">
+<h3 id="org51a842a">An API that can describe itself to computers!</h3>
+<ul>
+<li>We can list all the objects in an API</li>
+<li>We can ask for the fields for those objects</li>
+<li>We can get the type and the description for those fields</li>
+<li>&#x2026; and so on</li>
+
+</ul>
+
+</section>
+<section >
+
+<p>
+Enter: GraphiQL
+</p>
+
+<p>
+Let's explore NPM API
+</p>
+
+</section>
+<section id="slide-orge93b1c0">
+<h3 id="orge93b1c0">Beyond dev-time tooling: Find breaking changes in APIs!</h3>
+
+<div class="figure">
+<p><img src="./img/no_breaking_changes.png" alt="no_breaking_changes.png" />
+</p>
+</div>
+</section>
+<section id="slide-org8c7a537">
+<h3 id="org8c7a537">Beyond dev-time tooling: Automated API changelogs!</h3>
+<p>
+<a href="https://developer.github.com/v4/changelog/">https://developer.github.com/v4/changelog/</a>
+</p>
+</section>
+<section id="slide-org02c0a3e">
+<h3 id="org02c0a3e">Beyond dev-time tooling: Built-in mocking</h3>
+<p>
+We know the types of all the fields, it's easy to generate fake data!
+</p>
+
+<p>
+Can even be taken further with analysis.
+</p>
+
+</section>
+<section id="slide-org37a545a">
+<h4 id="org37a545a">Rest Caveats:</h4>
+<ul>
+<li>Swagger/OpenAPI: Best effort, often under-specified or outdated</li>
+
+</ul>
+
+</section>
+<section id="slide-orga097b91">
+<h3 id="orga097b91">GraphQL? More like TreeQL!</h3>
+<p>
+REST can struggle with over/under fetching, multiple round trips, etc.
+</p>
+
+</section>
+<section id="slide-org849915e">
+<h4 id="org849915e">Example: GitHub REST API</h4>
+<ul>
+<li>REST documentation is great!</li>
+<li>Repository payload is pretty big</li>
+
+</ul>
+<p>
+<a href="https://developer.github.com/v3/repos/#get">https://developer.github.com/v3/repos/#get</a>
+</p>
+
+<ul>
+<li>But we don't know what the client wants, so we can't help it</li>
+
+</ul>
+</section>
+<section >
+
+<p>
+What if we want to know <b>which</b> clients have ever looked at a given field?
+</p>
+
+</section>
+<section id="slide-orgf8f89f3">
+<h4 id="orgf8f89f3">REST Caveats:</h4>
+<ul>
+<li>HATEOAS?</li>
+<li>Ultimately "No true REST"</li>
+
+</ul>
+</section>
+<section id="slide-orgdc6ab6a">
+<h3 id="orgdc6ab6a">Computer inspect all the things!</h3>
+<p>
+Queries <b>themselves</b> are easily introspectable with GraphQL tooling
+</p>
+
+<p>
+See: <a href="https://astexplorer.net">https://astexplorer.net</a>
+</p>
+
+<ul>
+<li>On the server, know which fields a client needs, even across resources</li>
+<li>On the client, provide tooling</li>
+
+</ul>
+
+</section>
+<section >
+
+<p>
+How far can introspectable servers and queries go?
+</p>
+<p>
+What kind of crazy tooling could we build that would super-charge out ability to ship product?
+</p>
+</section>
+<section id="slide-orgd135b3a">
+<h4 id="orgd135b3a">&lt;Demo: Spotify Player with zero coding&gt;</h4>
+</section>
+<section id="slide-orga9b18f3">
+<h4 id="orga9b18f3">REST Caveats:</h4>
+<p>
+How would you do that with <a href="https://developer.spotify.com/documentation/web-api/reference-beta/#category-player">the (great!) Spotify REST API documentation</a>
+</p>
+
+
+<p class="fragment appear">
+&#x2026;
+</p>
+<p class="fragment appear">
+&#x2026;
+</p>
+
+<p class="fragment appear">
+<code>¯\_(ツ)_/¯ ¯\_(ツ)_/¯ ¯\_(ツ)_/¯</code>
+</p>
+
+</section>
+<section id="slide-orgf86e13c">
+<h3 id="orgf86e13c">Final caveat</h3>
+<p>
+GraphQL is not SQL, it's fundamentally - and intentionally - more limited in its expressiveness.
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org33f2862">
+<h2 id="org33f2862">JavaScript is Cool</h2>
+<ul>
+<li>Lots of industrial experience</li>
+<li>Frameworks galore!</li>
+<li>Infrastructure is robust</li>
+
+</ul>
+
+<p>
+Any similar but <span class="underline">new</span> tech has a lot of ground to cover if it's to catch up.
+</p>
+</section>
+<section id="slide-org9743181">
+<h3 id="org9743181">Not without challenges, however</h3>
+<div class="org-src-container">
+
+<pre><code class="js" >function insertCustomer(name, subName, org, rating, order) {
+...
+}
+</code></pre>
+</div>
+<ul>
+<li>What's `subName`? What does it refer to?</li>
+<li>What is `org`?</li>
+
+</ul>
+<p>
+Ambiguous and difficult
+</p>
+</section>
+<section id="slide-org1856446">
+<h3 id="org1856446">What about TypeScript?</h3>
+<p>
+Reason is TypeScript with:
+</p>
+<ul>
+<li>immutable.js</li>
+<li>rambda + fp</li>
+<li>eslint</li>
+<li>Strict-null checking</li>
+<li>Exhaustive switches and reachability</li>
+<li>Native syntax for pattern-matching, destructuring</li>
+
+</ul>
+
+<p>
+All built in, plus:
+</p>
+
+<ul>
+<li>built-in preprocesser (like babel transforms)</li>
+<li>Sound type-system</li>
+<li>Native compilation targets</li>
+
+</ul>
+
+</section>
+<section id="slide-orgb5cce02">
+<h3 id="orgb5cce02">More about ReasonML</h3>
+<ul>
+<li>A typed language that tries to - <b>ultimately</b> - make us happier</li>
+<li>~25 years old</li>
+<li>Lots of academic investment</li>
+<li>Fantastically broad reach
+<ul>
+<li>JS</li>
+<li>Native
+<ul>
+<li>x86</li>
+<li>ARM64</li>
+<li>eps32 (<a href="https://github.com/well-typed-lightbulbs">Well-typed lightbulbs</a>)</li>
+
+</ul></li>
+<li>Mobile (without JSC!)
+<ul>
+<li>iOS</li>
+<li>Android</li>
+
+</ul></li>
+
+</ul></li>
+
+</ul>
+</section>
+<section >
+<ul>
+<li>Serverless (by <a href="https://twitter.com/_anmonteiro">@<sub>anmonteiro</sub></a>, <a href="https://www.youtube.com/watch?v=z724eYN1ejw">demo</a>)
+<ul>
+<li>Native binary, single file</li>
+<li>Boots in &lt; 10ms (cold start)</li>
+<li>Entire process completes in 1ms for <code>hello-world</code> invocation</li>
+<li>Library to use from AWS Lambda or Zeit's now</li>
+
+</ul></li>
+<li>Unikernels</li>
+<li>Careful attention to developer experience
+<ul>
+<li>Including very similar syntax to JavaScript ("ES2030")</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section >
+<p>
+Reason focuses explicitly in making web UIs &amp; frontends as easy as possible:
+</p>
+<ul>
+<li>Syntax (JSX)</li>
+<li>Web UIs
+<ul>
+<li>Component state + transitions</li>
+<li>Routing</li>
+<li>Interop with JS, including every React component in the <b>npm</b> ecosystem</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section >
+<blockquote nil>
+<p>
+"[Reason] is the best way to take React to the next level"
+</p>
+
+<ul>
+<li>Jordan Walke, creator of Reason, React</li>
+
+</ul>
+</blockquote>
+
+</section>
+<section >
+
+<p>
+Compare new ReasonReact component to new React.js component
+<img src="./img/reason_react_vs_react_js_component.png" alt="reason_react_vs_react_js_component.png" />
+</p>
+
+</section>
+<section >
+<p>
+Still, there are challenges in typed languages:
+</p>
+<ul>
+<li>Difficult to know how to represent certain ideas
+<ul>
+<li>React.js prototype (SML)</li>
+
+</ul></li>
+<li>Some valid (or valid <b>enough</b>) programs are impossible to represent
+<ul>
+<li>Dependent types, etc.</li>
+
+</ul></li>
+
+</ul>
+</section>
+<section >
+<p>
+But, if we're on board with those challenges, what can we do?
+</p>
+
+<p>
+What about combining GraphQL's introspectability, Reason's babel-like preprocesser, and the slick type-safe ReasonReact?
+</p>
+</section>
+<section id="slide-org2d332d8">
+<h3 id="org2d332d8">Editor demo</h3>
+<p>
+<a href="https://www.youtube.com/watch?v=yMqE37LqRLA">Video demo</a>
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org457bf06">
+<h2 id="org457bf06">Hot reloading? How hot?</h2>
+<p>
+live reprocessing demo
+</p>
+
+<p>
+&#x2026; and a race!
+</p>
+</section>
+<section >
+<p>
+Reason is:
+</p>
+
+<ul>
+<li>Fast</li>
+<li>Fun</li>
+<li>Practical</li>
+<li>Thoughtful</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org9e6e1f8">
+<h2 id="org9e6e1f8">On the Frontend</h2>
+<div class="outline-text-2" id="text-org9e6e1f8">
+</div>
+</section>
+<section id="slide-org6339f34">
+<h3 id="org6339f34"><span class="underline">What</span> do we get?</h3>
+<ul>
+<li>Powerful clients (GraphQL)
+<ul>
+<li>Get exactly what you want (no over/under fetching)</li>
+<li>Reduced latency and network calls (huge for mobile)</li>
+
+</ul></li>
+<li>Safe client (Reason)
+<ul>
+<li>Won't even compile if server can't satisfy query</li>
+<li>Usage of query results are type-checked</li>
+<li>Nullable fields are enforced - no more run-time errors!</li>
+
+</ul></li>
+<li>Easy clients
+<ul>
+<li>Don't even think about network coordination</li>
+<li>Declaratively express requirements alongside components</li>
+
+</ul></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orge2d48b6">
+<h2 id="orge2d48b6"><span class="underline">How</span> does it work?</h2>
+<p>
+Read <a href="https://github.com/Astrocoders/reason-apollo-hooks/blob/master/README.md#usequery">https://github.com/Astrocoders/reason-apollo-hooks/blob/master/README.md#usequery</a>
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org6ef3c92">
+<h2 id="org6ef3c92">On the Backend</h2>
+<div class="outline-text-2" id="text-org6ef3c92">
+</div>
+</section>
+<section id="slide-orgb64ab02">
+<h3 id="orgb64ab02"><span class="underline">Why</span> in Reason(Native)?</h3>
+<p>
+As mindful server developers, we have to remember the goals of the clients:
+</p>
+<ul>
+<li>Productivity</li>
+<li>Safety</li>
+<li>Stability</li>
+<li>Guarantees
+<ul>
+<li>If you say you'll return an Int, return an int</li>
+<li>If you say a field is not nullable, do not return a null</li>
+<li>To be courteous, do this checking at compile time, not at run time
+(otherwise the client gets more error responses than they'd like)</li>
+
+</ul></li>
+
+</ul>
+</section>
+<section id="slide-org77021c9">
+<h3 id="org77021c9">Ever-vigilant</h3>
+<p>
+Make sure you're adhering to all the previous points:
+</p>
+<ul>
+<li>Even as your schema grows</li>
+<li>Even as your team grows</li>
+<li>Even as you're pushing a commit in a hurry on a rainy Friday at 19:30</li>
+
+</ul>
+</section>
+<section id="slide-org6c07943">
+<h3 id="org6c07943"><span class="underline">How</span> in Reason(Native)?</h3>
+<p>
+<a href="https://github.com/andreas/ocaml-graphql-server">ocaml-graphql-server</a>
+</p>
+
+<ul>
+<li>Best GraphQL Server in the world</li>
+
+</ul>
+<p>
+bar none.※
+</p>
+
+
+
+
+
+
+
+<p class="fragment appear">
+※ &#x2026; having not really used any others
+</p>
+</section>
+<section >
+<p>
+Easily create a compile-time safe GraphQL engine:
+</p>
+<div class="org-src-container">
+
+<pre><code class="js" >type user = {
+  id: int,
+  name: string,
+};
+
+/* User object */
+let user =
+  Schema.(
+    obj("user", ~doc="A user in the system", ~fields=_ =>
+      [
+        field(
+          "id",
+          ~doc="Unique user identifier",
+          ~typ=non_null(int),
+          ~args=Arg.[],
+          ~resolve=(ctx, p) =>
+          p.id
+        ),
+        field("name", ~typ=non_null(string), ~args=Arg.[], ~resolve=(ctx, p) =>
+          p.name
+        ),
+      ]
+    )
+  );
+</code></pre>
+</div>
+</section>
+<section >
+<p>
+Combine objects together into an explicit schema for your clients
+</p>
+<div class="org-src-container">
+
+<pre><code class="js" >/* Schema that clients will see */
+let schema =
+  Schema.(
+    schema([
+      field(
+        "users",
+        ~typ=non_null(list(non_null(user))),
+        ~args=Arg.[],
+        ~resolve=(ctx, ()) =>
+        users
+      ),
+    ])
+  );
+</code></pre>
+</div>
+</section>
+<section id="slide-org2d91da0">
+<h3 id="org2d91da0">Example of breaking schema</h3>
+
+<div class="figure">
+<p><img src="./img/no_breaking_changes.png" alt="no_breaking_changes.png" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org63d34e0">
+<h2 id="org63d34e0">Limitations</h2>
+<p>
+Both GraphQL <b>and</b> Reason are still figuring lots of things out.
+</p>
+
+<p>
+What you see is usable today, but isn't the final product.
+</p>
+
+<p>
+React hooks are an example!
+</p>
+</section>
+<section id="slide-org2ccc4ee">
+<h3 id="org2ccc4ee">Frontend</h3>
+<p>
+Not <span class="underline">all</span> of the GraphQL spec covered (though most of it is now)
+</p>
+
+<p>
+Probably won't be able to easily get GraphiQL-like auto-complete in-editor (maybe atom?)
+</p>
+</section>
+<section id="slide-org19caa6c">
+<h3 id="org19caa6c">Backend</h3>
+<p>
+Still figuring lots of things out:
+</p>
+<ul>
+<li><del>How to propagate errors</del></li>
+<li><del>Unions/Interfaces</del></li>
+<li><del>Subscriptions</del></li>
+<li><del>Directives</del></li>
+<li>Integrating into e.g. Apollo Engine</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org38e45f2">
+<h2 id="org38e45f2">Wider implications of GraphQL and typed languages</h2>
+<ul>
+<li>ClojureScript before/after React.js</li>
+
+</ul>
+<p>
+GraphQL wrappers make dealing with APIs in typed languages easier than any alternative:
+</p>
+<ul>
+<li>In-editor autocomplete</li>
+<li>Type safety</li>
+<li>Data-structure hints</li>
+
+</ul>
+
+<p>
+What does it mean for Reason (or Elm/Purescript/etc.) client and server devs if every service has a GraphQL wrapper?
+</p>
+</section>
+<section >
+<p>
+GraphQL and Reason, a match made in heaven!
+</p>
+
+<p>
+Example app: <a href="https://github.com/yukims19/onegraph-examples/tree/spotify-app/spotify-app">SpotDJ</a>
+</p>
+
+
+<div class="figure">
+<p><img src="./img/spotdj.png" alt="spotdj.png" />
+</p>
+</div>
+
+</section>
+<section >
+
+<ul>
+<li>Sean Grove (<a href="https://twitter.com/sgrove">@sgrove</a>)</li>
+<li>Cofounder of (<a href="https://twitter.com/onegraphio">@OneGraphIO</a>)</li>
+
+</ul>
+
+<p>
+Ačiū, Vilnius!
+</p>
+</section>
+</section>
+</div>
+</div>
+<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/head.min.js"></script>
+<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: true,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'default',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }]
+});
+</script>
+</body>
+</html>
