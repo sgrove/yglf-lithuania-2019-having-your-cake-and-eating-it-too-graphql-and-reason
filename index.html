@@ -7,19 +7,19 @@
 <style type="text/css">
 .underline { text-decoration: underline; }
 </style>
-<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/reveal.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/reveal.js/3.0.0/css/reveal.css"/>
 
-<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/theme/league.css" id="theme"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/reveal.js/3.0.0/css/theme/league.css" id="theme"/>
 
 <link rel="stylesheet" href="css/custom.css"/>
-<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/css/zenburn.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/reveal.js/3.0.0/lib/css/zenburn.css"/>
 <!-- If the query includes 'print-pdf', include the PDF print sheet -->
 <script>
     if( window.location.search.match( /print-pdf/gi ) ) {
         var link = document.createElement( 'link' );
         link.rel = 'stylesheet';
         link.type = 'text/css';
-        link.href = 'http://cdn.jsdelivr.net/reveal.js/3.0.0/css/print/pdf.css';
+        link.href = 'https://cdn.jsdelivr.net/reveal.js/3.0.0/css/print/pdf.css';
         document.getElementsByTagName( 'head' )[0].appendChild( link );
     }
 </script>
@@ -28,8 +28,8 @@
 <div class="reveal">
 <div class="slides">
 <section>
-<section id="slide-orgbc19dd4">
-<h2 id="orgbc19dd4">YGLF Lithuania</h2>
+<section id="slide-orga84b1a0">
+<h2 id="orga84b1a0">YGLF Lithuania</h2>
 <p class="fragment appear">
 Having your cake and eating it too:
 </p>
@@ -40,8 +40,8 @@ GraphQL and Reason
 </section>
 </section>
 <section>
-<section id="slide-org5c7d5f2">
-<h2 id="org5c7d5f2">Who am I?</h2>
+<section id="slide-org00d28e6">
+<h2 id="org00d28e6">Who am I?</h2>
 <ul>
 <li>Sean Grove (<a href="https://twitter.com/sgrove">@sgrove</a>), from SF</li>
 <li>Cofounder of (<a href="https://twitter.com/onegraphio">@OneGraphIO</a>)</li>
@@ -53,8 +53,8 @@ GraphQL and Reason
 </section>
 </section>
 <section>
-<section id="slide-org398c79a">
-<h2 id="org398c79a">REST is cool</h2>
+<section id="slide-org9623461">
+<h2 id="org9623461">REST is cool</h2>
 <ul>
 <li>Lots of industrial experience</li>
 <li>Frameworks galore!</li>
@@ -66,8 +66,8 @@ GraphQL and Reason
 Any similar but <span class="underline">new</span> tech has a lot of ground to cover if it's to catch up.
 </p>
 </section>
-<section id="slide-orgd7ee7bf">
-<h3 id="orgd7ee7bf">Example: Spotify REST API</h3>
+<section id="slide-org8d9718e">
+<h3 id="org8d9718e">Example: Spotify REST API</h3>
 <ul>
 <li>The <a href="https://developer.spotify.com/documentation/web-api/reference-beta/">API documentation</a> is great!</li>
 <li>&#x2026; but meant entirely for humans</li>
@@ -83,23 +83,23 @@ Imagine we're building a node client, and we want to know if we've covered <span
 How would we do that with Spotify's docs?
 </p>
 </section>
-<section id="slide-org12453dc">
-<h4 id="org12453dc">REST challenges</h4>
+<section id="slide-org540c9e7">
+<h4 id="org540c9e7">REST challenges</h4>
 <p>
 Computer assistance is one way only
 </p>
 </section>
 </section>
 <section>
-<section id="slide-org6d2f865">
-<h2 id="org6d2f865">GraphQL &amp; Introspectability</h2>
+<section id="slide-org4e31885">
+<h2 id="org4e31885">GraphQL &amp; Introspectability</h2>
 <ul>
 <li>Computer-based introspection is fundamental to GraphQL</li>
 
 </ul>
 </section>
-<section id="slide-org0ec7389">
-<h3 id="org0ec7389">Quick prelude: GraphQL basics</h3>
+<section id="slide-org1c77158">
+<h3 id="org1c77158">Quick prelude: GraphQL basics</h3>
 <p>
 GraphQL has three top-level parts:
 </p>
@@ -114,8 +114,8 @@ GraphQL has three top-level parts:
 </ul>
 
 </section>
-<section id="slide-org325bcb1">
-<h4 id="org325bcb1">GraphQL Syntax</h4>
+<section id="slide-orga04c564">
+<h4 id="orga04c564">GraphQL Syntax</h4>
 <div class="org-src-container">
 
 <pre><code class="graphql" >query {
@@ -140,8 +140,8 @@ mutation {
 </code></pre>
 </div>
 </section>
-<section id="slide-org201bb5f">
-<h4 id="org201bb5f">Sending a GraphQL request</h4>
+<section id="slide-org658249d">
+<h4 id="org658249d">Sending a GraphQL request</h4>
 <div class="org-src-container">
 
 <pre><code class="javascript" >{
@@ -159,8 +159,8 @@ Put the operations from before into a string, and put it in a JSON structure und
 Then add <code>"variables"</code> and <code>"operationName"</code> (both nullable) to form a full payload for a GraphQL request.
 </p>
 </section>
-<section id="slide-org4501f15">
-<h4 id="org4501f15">Let's send a request!</h4>
+<section id="slide-orgbe245f1">
+<h4 id="orgbe245f1">Let's send a request!</h4>
 <div class="org-src-container">
 
 <pre><code class="javascript" >query {
@@ -192,8 +192,8 @@ Try copy/pasting the curl command, it should just work™!
 </p>
 
 </section>
-<section id="slide-org3f2275f">
-<h3 id="org3f2275f">GraphQL &amp; Introspectability</h3>
+<section id="slide-org0ad2a70">
+<h3 id="org0ad2a70">GraphQL &amp; Introspectability</h3>
 <p>
 We can select more than data <span class="underline">from</span> the API&#x2026;
 </p>
@@ -247,8 +247,8 @@ Let's find all the objects belonging to Spotify:
 </div>
 
 </section>
-<section id="slide-org51a842a">
-<h3 id="org51a842a">An API that can describe itself to computers!</h3>
+<section id="slide-org732de83">
+<h3 id="org732de83">An API that can describe itself to computers!</h3>
 <ul>
 <li>We can list all the objects in an API</li>
 <li>We can ask for the fields for those objects</li>
@@ -269,22 +269,22 @@ Let's explore NPM API
 </p>
 
 </section>
-<section id="slide-orge93b1c0">
-<h3 id="orge93b1c0">Beyond dev-time tooling: Find breaking changes in APIs!</h3>
+<section id="slide-orgd0d74f1">
+<h3 id="orgd0d74f1">Beyond dev-time tooling: Find breaking changes in APIs!</h3>
 
 <div class="figure">
 <p><img src="./img/no_breaking_changes.png" alt="no_breaking_changes.png" />
 </p>
 </div>
 </section>
-<section id="slide-org8c7a537">
-<h3 id="org8c7a537">Beyond dev-time tooling: Automated API changelogs!</h3>
+<section id="slide-org74e8a32">
+<h3 id="org74e8a32">Beyond dev-time tooling: Automated API changelogs!</h3>
 <p>
 <a href="https://developer.github.com/v4/changelog/">https://developer.github.com/v4/changelog/</a>
 </p>
 </section>
-<section id="slide-org02c0a3e">
-<h3 id="org02c0a3e">Beyond dev-time tooling: Built-in mocking</h3>
+<section id="slide-org6c15093">
+<h3 id="org6c15093">Beyond dev-time tooling: Built-in mocking</h3>
 <p>
 We know the types of all the fields, it's easy to generate fake data!
 </p>
@@ -294,23 +294,23 @@ Can even be taken further with analysis.
 </p>
 
 </section>
-<section id="slide-org37a545a">
-<h4 id="org37a545a">Rest Caveats:</h4>
+<section id="slide-org61a8752">
+<h4 id="org61a8752">Rest Caveats:</h4>
 <ul>
 <li>Swagger/OpenAPI: Best effort, often under-specified or outdated</li>
 
 </ul>
 
 </section>
-<section id="slide-orga097b91">
-<h3 id="orga097b91">GraphQL? More like TreeQL!</h3>
+<section id="slide-orga927369">
+<h3 id="orga927369">GraphQL? More like TreeQL!</h3>
 <p>
 REST can struggle with over/under fetching, multiple round trips, etc.
 </p>
 
 </section>
-<section id="slide-org849915e">
-<h4 id="org849915e">Example: GitHub REST API</h4>
+<section id="slide-org7a406c4">
+<h4 id="org7a406c4">Example: GitHub REST API</h4>
 <ul>
 <li>REST documentation is great!</li>
 <li>Repository payload is pretty big</li>
@@ -332,16 +332,16 @@ What if we want to know <b>which</b> clients have ever looked at a given field?
 </p>
 
 </section>
-<section id="slide-orgf8f89f3">
-<h4 id="orgf8f89f3">REST Caveats:</h4>
+<section id="slide-org56d3513">
+<h4 id="org56d3513">REST Caveats:</h4>
 <ul>
 <li>HATEOAS?</li>
 <li>Ultimately "No true REST"</li>
 
 </ul>
 </section>
-<section id="slide-orgdc6ab6a">
-<h3 id="orgdc6ab6a">Computer inspect all the things!</h3>
+<section id="slide-org502e142">
+<h3 id="org502e142">Computer inspect all the things!</h3>
 <p>
 Queries <b>themselves</b> are easily introspectable with GraphQL tooling
 </p>
@@ -366,11 +366,11 @@ How far can introspectable servers and queries go?
 What kind of crazy tooling could we build that would super-charge out ability to ship product?
 </p>
 </section>
-<section id="slide-orgd135b3a">
-<h4 id="orgd135b3a">&lt;Demo: Spotify Player with zero coding&gt;</h4>
+<section id="slide-orgdf8db58">
+<h4 id="orgdf8db58">&lt;Demo: Spotify Player with zero coding&gt;</h4>
 </section>
-<section id="slide-orga9b18f3">
-<h4 id="orga9b18f3">REST Caveats:</h4>
+<section id="slide-org141f58c">
+<h4 id="org141f58c">REST Caveats:</h4>
 <p>
 How would you do that with <a href="https://developer.spotify.com/documentation/web-api/reference-beta/#category-player">the (great!) Spotify REST API documentation</a>
 </p>
@@ -388,8 +388,8 @@ How would you do that with <a href="https://developer.spotify.com/documentation/
 </p>
 
 </section>
-<section id="slide-orgf86e13c">
-<h3 id="orgf86e13c">Final caveat</h3>
+<section id="slide-org25d3cfe">
+<h3 id="org25d3cfe">Final caveat</h3>
 <p>
 GraphQL is not SQL, it's fundamentally - and intentionally - more limited in its expressiveness.
 </p>
@@ -397,8 +397,8 @@ GraphQL is not SQL, it's fundamentally - and intentionally - more limited in its
 </section>
 </section>
 <section>
-<section id="slide-org33f2862">
-<h2 id="org33f2862">JavaScript is Cool</h2>
+<section id="slide-org1058b1d">
+<h2 id="org1058b1d">JavaScript is Cool</h2>
 <ul>
 <li>Lots of industrial experience</li>
 <li>Frameworks galore!</li>
@@ -410,8 +410,8 @@ GraphQL is not SQL, it's fundamentally - and intentionally - more limited in its
 Any similar but <span class="underline">new</span> tech has a lot of ground to cover if it's to catch up.
 </p>
 </section>
-<section id="slide-org9743181">
-<h3 id="org9743181">Not without challenges, however</h3>
+<section id="slide-org339c30a">
+<h3 id="org339c30a">Not without challenges, however</h3>
 <div class="org-src-container">
 
 <pre><code class="js" >function insertCustomer(name, subName, org, rating, order) {
@@ -428,8 +428,8 @@ Any similar but <span class="underline">new</span> tech has a lot of ground to c
 Ambiguous and difficult
 </p>
 </section>
-<section id="slide-org1856446">
-<h3 id="org1856446">What about TypeScript?</h3>
+<section id="slide-orge3af6b7">
+<h3 id="orge3af6b7">What about TypeScript?</h3>
 <p>
 Reason is TypeScript with:
 </p>
@@ -455,8 +455,8 @@ All built in, plus:
 </ul>
 
 </section>
-<section id="slide-orgb5cce02">
-<h3 id="orgb5cce02">More about ReasonML</h3>
+<section id="slide-orgd112a87">
+<h3 id="orgd112a87">More about ReasonML</h3>
 <ul>
 <li>A typed language that tries to - <b>ultimately</b> - make us happier</li>
 <li>~25 years old</li>
@@ -567,16 +567,16 @@ But, if we're on board with those challenges, what can we do?
 What about combining GraphQL's introspectability, Reason's babel-like preprocesser, and the slick type-safe ReasonReact?
 </p>
 </section>
-<section id="slide-org2d332d8">
-<h3 id="org2d332d8">Editor demo</h3>
+<section id="slide-orgac3230f">
+<h3 id="orgac3230f">Editor demo</h3>
 <p>
 <a href="https://www.youtube.com/watch?v=yMqE37LqRLA">Video demo</a>
 </p>
 </section>
 </section>
 <section>
-<section id="slide-org457bf06">
-<h2 id="org457bf06">Hot reloading? How hot?</h2>
+<section id="slide-orgc2d570a">
+<h2 id="orgc2d570a">Hot reloading? How hot?</h2>
 <p>
 live reprocessing demo
 </p>
@@ -601,13 +601,13 @@ Reason is:
 </section>
 </section>
 <section>
-<section id="slide-org9e6e1f8">
-<h2 id="org9e6e1f8">On the Frontend</h2>
-<div class="outline-text-2" id="text-org9e6e1f8">
+<section id="slide-org3a26171">
+<h2 id="org3a26171">On the Frontend</h2>
+<div class="outline-text-2" id="text-org3a26171">
 </div>
 </section>
-<section id="slide-org6339f34">
-<h3 id="org6339f34"><span class="underline">What</span> do we get?</h3>
+<section id="slide-orgc0d4844">
+<h3 id="orgc0d4844"><span class="underline">What</span> do we get?</h3>
 <ul>
 <li>Powerful clients (GraphQL)
 <ul>
@@ -633,21 +633,21 @@ Reason is:
 </section>
 </section>
 <section>
-<section id="slide-orge2d48b6">
-<h2 id="orge2d48b6"><span class="underline">How</span> does it work?</h2>
+<section id="slide-org67b40cc">
+<h2 id="org67b40cc"><span class="underline">How</span> does it work?</h2>
 <p>
 Read <a href="https://github.com/Astrocoders/reason-apollo-hooks/blob/master/README.md#usequery">https://github.com/Astrocoders/reason-apollo-hooks/blob/master/README.md#usequery</a>
 </p>
 </section>
 </section>
 <section>
-<section id="slide-org6ef3c92">
-<h2 id="org6ef3c92">On the Backend</h2>
-<div class="outline-text-2" id="text-org6ef3c92">
+<section id="slide-org72b634d">
+<h2 id="org72b634d">On the Backend</h2>
+<div class="outline-text-2" id="text-org72b634d">
 </div>
 </section>
-<section id="slide-orgb64ab02">
-<h3 id="orgb64ab02"><span class="underline">Why</span> in Reason(Native)?</h3>
+<section id="slide-org7782475">
+<h3 id="org7782475"><span class="underline">Why</span> in Reason(Native)?</h3>
 <p>
 As mindful server developers, we have to remember the goals of the clients:
 </p>
@@ -666,8 +666,8 @@ As mindful server developers, we have to remember the goals of the clients:
 
 </ul>
 </section>
-<section id="slide-org77021c9">
-<h3 id="org77021c9">Ever-vigilant</h3>
+<section id="slide-org1f58531">
+<h3 id="org1f58531">Ever-vigilant</h3>
 <p>
 Make sure you're adhering to all the previous points:
 </p>
@@ -678,8 +678,8 @@ Make sure you're adhering to all the previous points:
 
 </ul>
 </section>
-<section id="slide-org6c07943">
-<h3 id="org6c07943"><span class="underline">How</span> in Reason(Native)?</h3>
+<section id="slide-orgf87bc85">
+<h3 id="orgf87bc85"><span class="underline">How</span> in Reason(Native)?</h3>
 <p>
 <a href="https://github.com/andreas/ocaml-graphql-server">ocaml-graphql-server</a>
 </p>
@@ -757,8 +757,8 @@ let schema =
 </code></pre>
 </div>
 </section>
-<section id="slide-org2d91da0">
-<h3 id="org2d91da0">Example of breaking schema</h3>
+<section id="slide-org18da6a4">
+<h3 id="org18da6a4">Example of breaking schema</h3>
 
 <div class="figure">
 <p><img src="./img/no_breaking_changes.png" alt="no_breaking_changes.png" />
@@ -768,8 +768,8 @@ let schema =
 </section>
 </section>
 <section>
-<section id="slide-org63d34e0">
-<h2 id="org63d34e0">Limitations</h2>
+<section id="slide-org7f203a9">
+<h2 id="org7f203a9">Limitations</h2>
 <p>
 Both GraphQL <b>and</b> Reason are still figuring lots of things out.
 </p>
@@ -782,8 +782,8 @@ What you see is usable today, but isn't the final product.
 React hooks are an example!
 </p>
 </section>
-<section id="slide-org2ccc4ee">
-<h3 id="org2ccc4ee">Frontend</h3>
+<section id="slide-org3e9ee81">
+<h3 id="org3e9ee81">Frontend</h3>
 <p>
 Not <span class="underline">all</span> of the GraphQL spec covered (though most of it is now)
 </p>
@@ -792,8 +792,8 @@ Not <span class="underline">all</span> of the GraphQL spec covered (though most 
 Probably won't be able to easily get GraphiQL-like auto-complete in-editor (maybe atom?)
 </p>
 </section>
-<section id="slide-org19caa6c">
-<h3 id="org19caa6c">Backend</h3>
+<section id="slide-orga708eab">
+<h3 id="orga708eab">Backend</h3>
 <p>
 Still figuring lots of things out:
 </p>
@@ -808,8 +808,8 @@ Still figuring lots of things out:
 </section>
 </section>
 <section>
-<section id="slide-org38e45f2">
-<h2 id="org38e45f2">Wider implications of GraphQL and typed languages</h2>
+<section id="slide-orgc22c984">
+<h2 id="orgc22c984">Wider implications of GraphQL and typed languages</h2>
 <ul>
 <li>ClojureScript before/after React.js</li>
 
@@ -859,8 +859,8 @@ Ačiū, Vilnius!
 </section>
 </div>
 </div>
-<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/head.min.js"></script>
-<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/js/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/head.min.js"></script>
+<script src="https://cdn.jsdelivr.net/reveal.js/3.0.0/js/reveal.js"></script>
 
 <script>
 // Full list of configuration options available here:
@@ -887,7 +887,7 @@ multiplex: {
 
 // Optional libraries used to extend on reveal.js
 dependencies: [
- { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }]
+ { src: 'https://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }]
 });
 </script>
 </body>
